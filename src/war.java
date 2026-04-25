@@ -6,7 +6,7 @@ public class war {
         // First Sentence
         Map<String, Object> line1 = new LinkedHashMap<>();
         line1.put("background", "res/war.png"); // bg
-        line1.put("text", "The nasty democrats have stole our victory, but I won't give up."); // 设置台词
+        line1.put("text", "The nasty democrats have stole our victory, but I won't give up.");
 
         // Second sentence
         Map<String, Object> line2 = new LinkedHashMap<>();
