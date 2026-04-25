@@ -1,7 +1,7 @@
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class GameScript {
+public class Begin {
     public static void main(String[] args) {
         Map<String, String> scriptMap = new LinkedHashMap<>();
 
