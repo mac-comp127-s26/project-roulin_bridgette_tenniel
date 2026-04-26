@@ -1,10 +1,10 @@
-import java.util.Map;
+import engine.StoryEngine;
 import story.StoryData;
+import ui.VisualNovelWindow;
 
 public class Main {
     public static void main(String[] args) {
-        Map<String, Object> story = StoryData.createStory();
-        System.out.println("Story loaded.");
-        System.out.println(story);
+        StoryEngine engine = new StoryEngine(StoryData.createStory());
+        new VisualNovelWindow(engine);
     }
 }
