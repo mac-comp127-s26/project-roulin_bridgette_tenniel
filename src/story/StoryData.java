@@ -83,19 +83,17 @@ public final class StoryData {
         return story;
     }
 }
-public final class StoryDataPart2 {
-    private StoryDataPart2() {
+public final class StoryDataDailyActivities{
+    private StoryDataDailyActivities() {
     }
 
     public static Map<String, Object> createMidGameContent() {
         Map<String, Object> gameContent = new HashMap<>();
 
-        // ==========================================
         // PART 1: DAILY ACTIVITIES POOL (For Days 2, 3, 5)
-        // ==========================================
         Map<String, List<Map<String, Object>>> activitiesPool = new HashMap<>();
 
-        // Category A: Campaign Rallies (Real 2020 events, 2 actions each)
+        // Category A: Campaign Rallies
         List<Map<String, Object>> rallies = new ArrayList<>();
         
         Map<String, Object> rally1 = new HashMap<>();
@@ -124,7 +122,7 @@ public final class StoryDataPart2 {
         
         activitiesPool.put("Rallies", rallies);
 
-        // Category B: Meeting Donors (Real 2020 events, no actions, just +1 Support)
+        // Category B: Meeting Donors
         List<Map<String, Object>> donors = new ArrayList<>();
         
         Map<String, Object> donor1 = new HashMap<>();
@@ -144,7 +142,7 @@ public final class StoryDataPart2 {
 
         activitiesPool.put("Donors", donors);
 
-        // Category C: Meeting Staff (Real 2020 events, no actions, just +1 Stability)
+        // Category C: Meeting Staff
         List<Map<String, Object>> staffMeetings = new ArrayList<>();
         
         Map<String, Object> staff1 = new HashMap<>();
@@ -166,12 +164,10 @@ public final class StoryDataPart2 {
         gameContent.put("DailyActivitiesPool", activitiesPool);
 
 
-        // ==========================================
-        // PART 2: PRESS CONFERENCES (Fixed for Days 2 & 4)
-        // ==========================================
+        // PART 2: PRESS CONFERENCES (For Days 2 & 4)
         List<Map<String, Object>> pressConferences = new ArrayList<>();
 
-        // Press Conf 1: The Disinfectant Briefing (April 23, 2020)
+        // Press Conf 1: The Disinfectant Briefing
         Map<String, Object> press1 = new HashMap<>();
         press1.put("event", "White House Briefing: A very nasty reporter asks if you seriously think injecting bleach or using ultraviolet light inside the body is a good idea to cure the virus.");
         press1.put("actionA", "Answer vaguely: Suggest they should look into UV light and cleaning the lungs, it sounds interesting.");
@@ -183,7 +179,7 @@ public final class StoryDataPart2 {
         press1.put("actionC", "Refuse to answer: 'You are a terrible reporter, that's a fake news question, get out!'");
         pressConferences.add(press1);
 
-        // Press Conf 2: Peaceful Transfer of Power (Sept 23, 2020)
+        // Press Conf 2: Peaceful Transfer of Power
         Map<String, Object> press2 = new HashMap<>();
         press2.put("event", "White House Briefing: A reporter asks if you will commit to a peaceful transfer of power after the election, regardless of who wins.");
         press2.put("actionA", "Answer vaguely: 'We're going to have to see what happens, you know that I've been complaining very strongly about the ballots.'");
@@ -198,9 +194,7 @@ public final class StoryDataPart2 {
         gameContent.put("PressConferences", pressConferences);
 
 
-        // ==========================================
         // PART 3: PRESIDENTIAL DEBATE (Standalone Ending/Plot)
-        // ==========================================
         Map<String, Object> presidentialDebate = new HashMap<>();
         presidentialDebate.put("intro", "September 29, 2020. You walk onto the debate stage in Cleveland. Sleepy Joe is standing at his podium. The moderator asks the first question, but you completely tune out whatever Joe is saying.");
         
