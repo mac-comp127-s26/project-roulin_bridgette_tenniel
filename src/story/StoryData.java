@@ -20,6 +20,17 @@ public final class StoryData {
         return story;
     }
 
+     private static Map<String, Object> introScene() {
+        return scene(
+            "intro", 
+            "opening", 
+            "Welcome", 
+            "res/black.png", 
+            "In this game, you need to play as Donald Trump to make a series of decision to win the 2020 election.  You need to click on different buttons to make different decisions, and this will decide your destiny.",
+            option("A", "Start Story", null) 
+        );
+    }
+
     private static Map<String, Object> openingScene() {
         return scene(
             "opening",
