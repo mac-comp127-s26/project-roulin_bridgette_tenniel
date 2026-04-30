@@ -12,7 +12,9 @@ public final class StoryData {
     public static Map<String, Object> createStory() {
         Map<String, Object> story = new HashMap<>();
         story.put("title", "President Trump's 2020 Adventure");
+        story.put("intro", introScene());
         story.put("opening", openingScene());
+        story.put("cast", castScene());
         story.put("initialStats", stats(-2, 0, 0));
         story.put("actionPool", buildActionPool());
         story.put("days", buildDays());
@@ -20,14 +22,14 @@ public final class StoryData {
         return story;
     }
 
-     private static Map<String, Object> introScene() {
+    private static Map<String, Object> introScene() {
         return scene(
-            "intro", 
-            "opening", 
-            "Welcome", 
-            "res/black.png", 
+            "intro",
+            "opening",
+            "Welcome",
+            "res/black.png",
             "In this game, you need to play as Donald Trump to make a series of decision to win the 2020 election.  You need to click on different buttons to make different decisions, and this will decide your destiny.",
-            option("A", "Start Story", null) 
+            option("A", "Start Story", null)
         );
     }
 
@@ -36,11 +38,23 @@ public final class StoryData {
             "opening",
             "opening",
             "A Strange Morning",
-            "res/news1-2.png",
+            "res/black.png",
             "You wake up in the White House with a terrifying memory.\n"
                 + "In another timeline, you lost the 2020 election.\n"
                 + "This time, you have five days to change everything.",
             option("A", "Begin the campaign", null)
+        );
+    }
+
+    private static Map<String, Object> castScene() {
+        return scene(
+            "cast",
+            "cast",
+            "Cast",
+            "res/cast.png",
+            "Thanks for playing President Trump's 2020 Adventure.\n"
+                + "Created by Ruolin Shen, Tianqi Zhao, and Bridgette Mi.",
+            option("A", "The End", null)
         );
     }
 
@@ -239,7 +253,7 @@ public final class StoryData {
         round.put("roundNumber", roundNumber);
         round.put("title", title);
         round.put("text", text);
-        round.put("image", "res/war.png");
+        round.put("image", "res/decide.png");
         round.put("availableActions", List.of("rally", "donor", "staff"));
         return round;
     }

@@ -89,7 +89,7 @@ public class VisualNovelWindow {
     }
 
     private void handleClick(double x, double y) {
-        if (engine.isFinished()) {
+        if (engine.isCastScreen()) {
             return;
         }
 
@@ -104,8 +104,10 @@ public class VisualNovelWindow {
     }
 
     private void render() {
-        if (engine.isFinished()) {
+        if (engine.isFinished() && !engine.isCastScreen()) {
             renderEnding();
+        } else if (engine.isCastScreen()) {
+            renderCast();
         } else {
             renderScene(engine.getCurrentScene(), engine.getCurrentOptions());
         }
@@ -135,14 +137,35 @@ public class VisualNovelWindow {
     }
 
     private void renderEnding() {
-        Map<String, Object> ending = engine.getEnding();
+        Map<String, Object> ending = engine.getCurrentScene();
 
         dayText.setText("Ending");
         titleText.setText((String) ending.get("title"));
-        bodyText.setText(ending.get("text") + "\n\nClicking is disabled on this screen.");
+        bodyText.setText(ending.get("text") + "\n\nClick the button to continue to the cast.");
         statsText.setText(buildStatsText());
 
         setBackgroundPath((String) ending.get("image"));
+
+        List<Map<String, Object>> options = engine.getCurrentOptions();
+        for (int i = 0; i < buttons.size(); i++) {
+            if (i < options.size()) {
+                buttons.get(i).setVisible(true);
+                buttons.get(i).setText(options.get(i).get("key") + ". " + options.get(i).get("label"));
+            } else {
+                buttons.get(i).setVisible(false);
+            }
+        }
+    }
+
+    private void renderCast() {
+        Map<String, Object> cast = engine.getCurrentScene();
+
+        dayText.setText("Cast");
+        titleText.setText((String) cast.get("title"));
+        bodyText.setText((String) cast.get("text"));
+        statsText.setText(buildStatsText());
+
+        setBackgroundPath((String) cast.get("image"));
 
         for (ChoiceButton button : buttons) {
             button.setVisible(false);
