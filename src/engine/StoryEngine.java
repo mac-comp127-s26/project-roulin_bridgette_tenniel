@@ -8,12 +8,19 @@ import java.util.Map;
 import java.util.Set;
 
 public class StoryEngine {
+    private enum Phase {
+        INTRO,
+        OPENING,
+        GAME,
+        ENDING,
+        CAST
+    }
+
     private final Map<String, Object> story;
     private final GameState state;
-    private boolean openingActive = true;
+    private Phase phase = Phase.INTRO;
     private int dayIndex;
     private int roundIndex;
-    private boolean finished;
     private String selectedActionId;
     private final Set<String> usedActionsToday = new HashSet<>();
 
@@ -31,26 +38,42 @@ public class StoryEngine {
     }
 
     public int getCurrentDayNumber() {
-        if (openingActive) {
+        if (phase != Phase.GAME) {
             return 0;
         }
         return (Integer) getCurrentDay().get("dayNumber");
     }
 
     public int getCurrentRoundNumber() {
-        if (openingActive || finished) {
+        if (phase != Phase.GAME) {
             return 0;
         }
         return roundIndex + 1;
     }
 
     public boolean isFinished() {
-        return finished;
+        return phase == Phase.ENDING || phase == Phase.CAST;
+    }
+
+    public boolean isCastScreen() {
+        return phase == Phase.CAST;
     }
 
     public Map<String, Object> getCurrentScene() {
-        if (openingActive) {
+        if (phase == Phase.INTRO) {
+            return castSceneMap(story.get("intro"));
+        }
+
+        if (phase == Phase.OPENING) {
             return castSceneMap(story.get("opening"));
+        }
+
+        if (phase == Phase.ENDING) {
+            return getEnding();
+        }
+
+        if (phase == Phase.CAST) {
+            return castSceneMap(story.get("cast"));
         }
 
         if (selectedActionId != null) {
@@ -75,14 +98,24 @@ public class StoryEngine {
     }
 
     public void chooseOption(int optionIndex) {
-        if (finished) {
+        if (phase == Phase.CAST) {
             return;
         }
 
         Map<String, Object> option = getCurrentOptions().get(optionIndex);
 
-        if (openingActive) {
-            openingActive = false;
+        if (phase == Phase.INTRO) {
+            phase = Phase.OPENING;
+            return;
+        }
+
+        if (phase == Phase.OPENING) {
+            phase = Phase.GAME;
+            return;
+        }
+
+        if (phase == Phase.ENDING) {
+            phase = Phase.CAST;
             return;
         }
 
@@ -140,7 +173,7 @@ public class StoryEngine {
 
         List<Map<String, Object>> days = castSceneList(story.get("days"));
         if (dayIndex >= days.size()) {
-            finished = true;
+            phase = Phase.ENDING;
         }
     }
 
