@@ -3,7 +3,6 @@ package ui;
 import edu.macalester.graphics.CanvasWindow;
 import edu.macalester.graphics.FontStyle;
 import edu.macalester.graphics.GraphicsText;
-import edu.macalester.graphics.Image;
 import edu.macalester.graphics.Rectangle;
 import engine.StoryEngine;
 import java.awt.Color;
@@ -18,7 +17,7 @@ public class VisualNovelWindow {
 
     private final StoryEngine engine;
     private final CanvasWindow window;
-    private final Image backgroundImage;
+    private final CenteredImage background;
     private final Rectangle dialogueBox;
     private final Rectangle statsPanel;
     private final GraphicsText titleText;
@@ -30,9 +29,9 @@ public class VisualNovelWindow {
     public VisualNovelWindow(StoryEngine engine) {
         this.engine = engine;
         this.window = new CanvasWindow(engine.getTitle(), WINDOW_WIDTH, WINDOW_HEIGHT);
-        this.window.setBackground(new Color(216, 230, 241));
+        this.window.setBackground(Color.BLACK); 
 
-        backgroundImage = new Image(0, 0);
+       background = new CenteredImage(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         dialogueBox = new Rectangle(40, 500, 1120, 250);
         dialogueBox.setFilled(true);
@@ -73,7 +72,7 @@ public class VisualNovelWindow {
             buttons.add(button);
         }
 
-        window.add(backgroundImage);
+        window.add(background.getGraphics()); 
         window.add(dayText);
         window.add(dialogueBox);
         window.add(statsPanel);
@@ -124,7 +123,8 @@ public class VisualNovelWindow {
         bodyText.setText((String) scene.get("text"));
         statsText.setText(buildStatsText());
 
-        setBackgroundPath((String) scene.get("image"));
+        // Update background using our new class
+        background.updateImage((String) scene.get("image"));
 
         for (int i = 0; i < buttons.size(); i++) {
             if (i < options.size()) {
@@ -144,7 +144,7 @@ public class VisualNovelWindow {
         bodyText.setText(ending.get("text") + "\n\nClick the button to continue to the cast.");
         statsText.setText(buildStatsText());
 
-        setBackgroundPath((String) ending.get("image"));
+        background.updateImage((String) ending.get("image"));
 
         List<Map<String, Object>> options = engine.getCurrentOptions();
         for (int i = 0; i < buttons.size(); i++) {
@@ -165,32 +165,11 @@ public class VisualNovelWindow {
         bodyText.setText((String) cast.get("text"));
         statsText.setText(buildStatsText());
 
-        setBackgroundPath((String) cast.get("image"));
+        background.updateImage((String) cast.get("image"));
 
         for (ChoiceButton button : buttons) {
             button.setVisible(false);
         }
-    }
-
-    private void setBackgroundPath(String rawPath) {
-        String normalizedPath = rawPath.startsWith("res/") ? rawPath.substring(4) : rawPath;
-        backgroundImage.setImagePath(normalizedPath);
-        fitBackground();
-    }
-
-    private void fitBackground() {
-        double imageWidth = backgroundImage.getImageWidth();
-        double imageHeight = backgroundImage.getImageHeight();
-        if (imageWidth <= 0 || imageHeight <= 0) {
-            return;
-        }
-
-        double scale = Math.max(WINDOW_WIDTH / imageWidth, WINDOW_HEIGHT / imageHeight);
-        backgroundImage.setScale(scale);
-        backgroundImage.setPosition(
-            (WINDOW_WIDTH - imageWidth * scale) / 2.0,
-            (WINDOW_HEIGHT - imageHeight * scale) / 2.0
-        );
     }
 
     private String buildStatsText() {
