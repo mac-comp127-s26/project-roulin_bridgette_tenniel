@@ -14,6 +14,7 @@ public class VisualNovelWindow {
     private static final int WINDOW_WIDTH = 1200;
     private static final int WINDOW_HEIGHT = 800;
     private static final int MAX_BUTTONS = 3;
+    private static final double OFFSCREEN_X = -5000;
 
     private final StoryEngine engine;
     private final CanvasWindow window;
@@ -114,6 +115,8 @@ public class VisualNovelWindow {
     }
 
     private void renderScene(Map<String, Object> scene, List<Map<String, Object>> options) {
+        showStandardOverlay();
+
         if (engine.getCurrentDayNumber() == 0) {
             dayText.setText("Opening");
         } else {
@@ -138,6 +141,7 @@ public class VisualNovelWindow {
 
     private void renderEnding() {
         Map<String, Object> ending = engine.getCurrentScene();
+        showStandardOverlay();
 
         dayText.setText("Ending");
         titleText.setText((String) ending.get("title"));
@@ -159,17 +163,31 @@ public class VisualNovelWindow {
 
     private void renderCast() {
         Map<String, Object> cast = engine.getCurrentScene();
-
-        dayText.setText("Cast");
-        titleText.setText((String) cast.get("title"));
-        bodyText.setText((String) cast.get("text"));
-        statsText.setText(buildStatsText());
+        hideOverlayForCast();
 
         background.updateImage((String) cast.get("image"));
 
         for (ChoiceButton button : buttons) {
             button.setVisible(false);
         }
+    }
+
+    private void showStandardOverlay() {
+        dayText.setPosition(70, 70);
+        dialogueBox.setPosition(40, 500);
+        statsPanel.setPosition(900, 20);
+        titleText.setPosition(70, 540);
+        bodyText.setPosition(70, 580);
+        statsText.setPosition(920, 60);
+    }
+
+    private void hideOverlayForCast() {
+        dayText.setPosition(OFFSCREEN_X, OFFSCREEN_X);
+        dialogueBox.setPosition(OFFSCREEN_X, OFFSCREEN_X);
+        statsPanel.setPosition(OFFSCREEN_X, OFFSCREEN_X);
+        titleText.setPosition(OFFSCREEN_X, OFFSCREEN_X);
+        bodyText.setPosition(OFFSCREEN_X, OFFSCREEN_X);
+        statsText.setPosition(OFFSCREEN_X, OFFSCREEN_X);
     }
 
     private String buildStatsText() {

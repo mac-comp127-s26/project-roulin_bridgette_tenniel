@@ -53,8 +53,7 @@ public final class StoryData {
             "Cast",
             "res/cast.png",
             "Thanks for playing President Trump's 2020 Adventure.\n"
-                + "Created by Ruolin Shen, Tianqi Zhao, and Bridgette Mi.",
-            option("A", "The End", null)
+                + "Created by Ruolin Shen, Tianqi Zhao, and Bridgette Mi."
         );
     }
 

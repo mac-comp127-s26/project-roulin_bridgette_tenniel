@@ -94,6 +94,19 @@ public class StoryEngine {
     }
 
     public List<Map<String, Object>> getCurrentOptions() {
+        if (phase == Phase.ENDING) {
+            List<Map<String, Object>> options = new ArrayList<>();
+            Map<String, Object> continueOption = new HashMap<>();
+            continueOption.put("key", "A");
+            continueOption.put("label", "Continue");
+            options.add(continueOption);
+            return options;
+        }
+
+        if (phase == Phase.CAST) {
+            return new ArrayList<>();
+        }
+
         return castSceneList(getCurrentScene().get("options"));
     }
 
