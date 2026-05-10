@@ -1,205 +1,209 @@
-# President Trump's 2020 Adventure
-## A Narrative-Driven Strategy Simulation Game
+# President Trump’s 2020 Adventure
+
+## Overview
+
+President Trump’s 2020 Adventure is a narrative-based strategy game created as the final project for COMP 127.
+
+The player takes control of Donald Trump during the final five days before the 2020 U.S. presidential election. The story takes place in an alternate timeline where the election has already been lost, but the player suddenly wakes up five days earlier with a chance to change the result.
+
+Throughout the game, the player manages three statistics:
+
+- Support
+- Stability
+- Mood
+
+Each day includes:
+- reacting to news events,
+- attending campaign activities,
+- and choosing one strategic action:
+  - Rally
+  - Donor Meeting
+  - Staff Meeting
+
+After Day 5, the game determines one of four endings depending on the player’s final statistics.
+
+The project was built entirely in Java using JavaFX for the user interface. Story events, dialogue, and endings are stored using nested HashMaps and ArrayLists.
 
 ---
 
-## 1. Executive Summary
+# Software Requirements
 
-**President Trump's 2020 Adventure** is a turn-based narrative strategy game developed as the final project for COMP 127. The game places the player in the role of Donald Trump during the final five days of the 2020 United States presidential election. The narrative premise operates on an alternate-history conceit: the player awakens in a timeline where the election has already been lost, but is granted the opportunity to relive the final five days preceding Election Day with full knowledge of the original outcome.
-
-The project demonstrates the application of object-oriented design principles, finite-state machine architecture, and data-driven narrative systems within the context of interactive media development.
-
----
-
-## 2. Game Design & Mechanics
-
-### 2.1 Core Gameplay Loop
-
-The game operates on a strictly linear temporal structure spanning five in-game days. Each day is subdivided into three distinct phases, creating a structured decision-making environment:
-
-| Phase | Description | Player Agency |
-|-------|-------------|---------------|
-| **Morning Twitter** | The player reviews breaking news and selects a rhetorical response | High — binary or tertiary choice structure |
-| **Fixed Events** | Scripted narrative events (e.g., debates, press conferences, external crises) | None — these advance the plot and may apply stat modifiers |
-| **Action Phase** | The player selects one strategic action to execute during the afternoon/evening | High — constrained by daily uniqueness rules |
-
-### 2.2 Player Statistics & State Tracking
-
-The game employs a three-dimensional state vector to quantify the player's strategic position:
-
-- **Support** (`double` or `int`, 0–100): Represents aggregate public approval, base enthusiasm, and electoral momentum. This is the primary victory condition metric.
-- **Stability** (`double` or `int`, 0–100): Measures campaign organizational coherence, staff morale, and operational readiness. Critical for preventing catastrophic failure states.
-- **Mood** (`double` or `int`, 0–100): Represents the player character's emotional state, ranging from composed to volatile. Affects narrative options and may gate certain decision branches.
-
-All statistics are bounded within a normalized range and are modified by player decisions, random narrative events, and inter-stat dependencies.
-
-### 2.3 Action Economy & Constraints
-
-During the Action Phase, the player must select exactly one action from the following pool:
-
-| Action | Primary Effect | Secondary Effect | Risk Profile |
-|--------|---------------|-------------------|--------------|
-| **Rally** | +Support (significant) | -Stability (moderate), +Mood (moderate) | High variance; may trigger unpredictable events |
-| **Donors** | +Support (moderate, immediate) | Neutral | Low risk, low reward |
-| **Staff Meeting** | +Stability (significant) | -Mood (moderate) | Defensive; prevents instability cascades |
-
-**Constraint:** The same action cannot be selected twice within a single day, forcing strategic diversification and preventing dominant strategies.
-
-### 2.4 End-State Evaluation System
-
-Upon completion of Day 5, the game evaluates the final state vector against a deterministic condition matrix to assign one of four narrative endings:
-
-| Ending | Support Condition | Stability Condition | Mood Condition | Narrative Description |
-|--------|-------------------|---------------------|----------------|----------------------|
-| **Victory** | High (≥ threshold) | High (≥ threshold) | Any | The player secures an electoral comeback and wins the presidency |
-| **War** | Any | Critical Low (≤ threshold) | Any | The player rejects the election results, triggering a constitutional crisis |
-| **Lose** | Low (< threshold) | Any | Composed (≥ threshold) | The player concedes gracefully and accepts defeat |
-| **Sad** | Low (< threshold) | Any | Bitter (< threshold) | The player loses and exhibits profound emotional distress |
+| Software | Version |
+|---|---|
+| OpenJDK | 21.0.2 LTS or newer |
+| Visual Studio Code | 1.118.1 or newer |
+| JavaFX SDK | 21.0.2 |
+| Extension Pack for Java | Latest |
 
 ---
 
-## 3. Software Architecture
+# Setup Instructions
 
-### 3.1 Technology Stack
+## 1. Install OpenJDK
 
-| Layer | Technology | Version Requirement |
-|-------|-----------|---------------------|
-| Language | Java | SE 11 or newer |
-| UI Framework | JavaFX | Bundled with JDK 11+ or standalone |
-| Build System | Platform-agnostic (IntelliJ IDEA / Eclipse / VS Code) | N/A |
-| Data Structure | Standard Collections (`java.util`) | N/A |
+Download OpenJDK 21:
 
-### 3.2 Core Class Architecture
+https://jdk.java.net/21/
 
-The codebase follows a Model-View-Controller (MVC) pattern with data-driven narrative content.
+Verify the installation:
 
-#### `StoryData.java` — The Narrative Repository
-- **Responsibility:** Static factory class responsible for constructing and populating the master narrative graph.
-- **Implementation:** Utilizes nested `HashMap<String, Object>` and `ArrayList<Choice>` structures to store scene text, choice labels, stat modifiers, and scene transition logic.
-- **Key Method:** `createStory()` — initializes the complete 5-day narrative tree, action pool, and ending condition matrix at runtime.
-- **Design Rationale:** Decoupling narrative content from game logic allows non-programmers to modify story branches without altering core engine code.
-
-#### `GameState.java` — The Model Layer
-- **Responsibility:** Encapsulates the entire mutable state of the game session.
-- **Attributes:**
-  - `int support`, `int stability`, `int mood`
-  - `int currentDay`
-  - `Set<String> actionsTakenToday` — enforces daily action uniqueness constraint
-  - `String currentSceneId` — pointer into the narrative graph
-- **Methods:** Getters, setters with bounds checking, daily reset logic, and end-state evaluation predicates.
-
-#### `GameController.java` — The Controller Layer
-- **Responsibility:** Mediates between user input, game state mutations, and UI updates.
-- **Functions:**
-  - Handles JavaFX `ActionEvent` triggers from UI buttons
-  - Applies stat modifiers from selected choices
-  - Navigates the narrative graph by resolving scene IDs
-  - Triggers scene transitions and ending sequences
-  - Enforces game rules (e.g., action uniqueness validation)
-
-### 3.3 Data Flow & Execution Sequence
-
-```
-[Application Launch]
-    ↓
-[StoryData.createStory()] → Loads narrative graph into memory
-    ↓
-[GameState instantiation] → Initializes default stats (Day 1)
-    ↓
-[JavaFX Stage Setup] → Renders initial scene from master map
-    ↓
-[Player Input] → GameController.handleChoice(choiceId)
-    ↓
-[Stat Modification] → GameState.applyModifiers(deltaSupport, deltaStability, deltaMood)
-    ↓
-[Scene Resolution] → Lookup nextSceneId in narrative graph
-    ↓
-[UI Update] → JavaFX scene transition
-    ↓
-[Day Advancement Check] → If Day 5 complete → Evaluate End-State Conditions
-    ↓
-[Ending Scene] → Display final narrative outcome
+```bash
+java -version
+javac -version
 ```
 
 ---
 
-## 4. Narrative System Design
+## 2. Install VS Code
 
-### 4.1 Content Structure
+Download VS Code:
 
-The narrative is organized as a directed graph where nodes represent scenes and edges represent player choices or scripted transitions. Each node contains:
+https://code.visualstudio.com/
 
-- **Scene ID:** Unique identifier (e.g., `"day3_morning_twitter"`)
-- **Display Text:** Narrative content presented to the player
-- **Choice Array:** Available options, each containing:
-  - Display label
-  - Stat delta vector `(ΔSupport, ΔStability, ΔMood)`
-  - Target scene ID
-- **Phase Metadata:** Tags indicating `MORNING`, `FIXED`, or `ACTION` phase
-
-### 4.2 Branching Logic
-
-While the temporal structure is linear (Day 1 → Day 5), the narrative graph permits significant horizontal branching within each day. The player's accumulated statistics may also unlock or suppress specific choices, creating emergent narrative variation across playthroughs.
+Then install the **Extension Pack for Java** from the Extensions tab.
 
 ---
 
-## 5. Installation & Deployment
+## 3. Install JavaFX
 
-### 5.1 Prerequisites
+If your JDK does not include JavaFX:
 
-- **Java Development Kit (JDK):** Version 11 or newer (JavaFX is included in JDK 8–10; for JDK 11+, ensure JavaFX libraries are configured in the module path)
-- **Integrated Development Environment (IDE):** IntelliJ IDEA, Eclipse, or Visual Studio Code with Java extensions
+1. Download JavaFX SDK 21.0.2:
+   
+https://gluonhq.com/products/javafx/
 
-### 5.2 Build & Run Instructions
+2. Extract the SDK somewhere on your computer.
 
-1. **Clone or extract** the project directory to your local filesystem.
-2. **Open** the project root folder in your preferred IDE.
-3. **Locate the main entry point:** `Main.java` (or `App.java`, depending on the build configuration).
-4. **Configure the run configuration:**
-   - Ensure the JDK is set to 11 or higher.
-   - If using a modular JDK (11+), add JavaFX modules to the VM options:
-     ```
-     --module-path /path/to/javafx/lib --add-modules javafx.controls,javafx.fxml
-     ```
-5. **Execute** the main class to launch the application.
+Example:
+
+```bash
+~/javafx-sdk-21.0.2
+```
 
 ---
 
-## 6. Future Development & Extensibility
+## 4. Clone the Repository
 
-The current architecture supports the following extensions without structural refactoring:
-
-- **Additional Endings:** New terminal states can be added by expanding the condition matrix in `StoryData`.
-- **Modular Content Packs:** External narrative files (JSON/XML) could replace the hardcoded `HashMap` structure, enabling user-generated content.
-- **Save/Load System:** `GameState` is serializable; implementing `Serializable` or JSON export would enable persistence.
-- **Enhanced UI:** The JavaFX frontend can be extended with CSS styling, animation libraries, or media integration.
-- **Difficulty Modes:** Stat modifier magnitudes can be parameterized to create Easy/Normal/Hard variants.
+```bash
+git clone https://github.com/mac-comp127-s26/project-roulin_bridgette_tenniel.git
+cd project-roulin_bridgette_tenniel
+```
 
 ---
 
-## 7. Academic Context
+## 5. Open the Project
 
-This project was developed as the final deliverable for **COMP 127** at [Institution Name]. It demonstrates competency in:
+1. Open VS Code.
+2. Select **File → Open Folder**.
+3. Open the cloned repository folder.
 
-- Object-oriented programming (inheritance, encapsulation, polymorphism)
-- Event-driven programming and GUI development
-- Data structure selection and algorithm design
-- Software engineering documentation and version control
-
----
-
-## 8. Credits & Attribution
-
-| Role | Contributor |
-|------|-------------|
-| Game Design & Narrative | Ruolin Shen |
-| Software Engineering | Tianqi Zhao |
-| UI/UX Implementation | Bridgette Mi |
-
-**Course:** COMP 127 Final Project  
-**License:** All rights reserved by the authors. This software was created for educational purposes. Unauthorized commercial distribution or public deployment is prohibited without express written consent.
+Wait for the Java extensions to finish loading.
 
 ---
 
-*Document Version: 1.0*  
-*Last Updated: May 2026*
+## 6. Configure JavaFX
+
+If JavaFX is not bundled with your JDK, create:
+
+```text
+.vscode/launch.json
+```
+
+Add:
+
+```json
+{
+    "type": "java",
+    "name": "Launch Main",
+    "request": "launch",
+    "mainClass": "Main",
+    "vmArgs": "--module-path /path/to/javafx-sdk-21.0.2/lib --add-modules javafx.controls,javafx.fxml"
+}
+```
+
+Replace the module path with your own JavaFX SDK location.
+
+Example on macOS:
+
+```text
+/Users/yourname/javafx-sdk-21.0.2/lib
+```
+
+---
+
+## 7. Run the Game
+
+1. Open `Main.java`.
+2. Click the **Run** button or right-click and select **Run Java**.
+
+---
+
+# Screenshots
+
+## Main Menu
+
+![Main Menu](https://github.com/mac-comp127-s26/project-roulin_bridgette_tenniel/blob/main/assets/main-menu.png)
+
+---
+
+## Gameplay
+
+![Gameplay Scene](https://github.com/mac-comp127-s26/project-roulin_bridgette_tenniel/blob/main/assets/gameplay-scene.png)
+
+---
+
+## Ending Screen
+
+![Ending Screen](https://github.com/mac-comp127-s26/project-roulin_bridgette_tenniel/blob/main/assets/outlook.png)
+
+---
+
+# Presentation Video
+
+https://drive.google.com/file/d/1AIyiLH94TWavmZl3s4Q5IM1VavAh-3Dg/view?usp=sharing
+
+---
+
+# Presentation Slides
+
+https://drive.google.com/file/d/1xcoYcmCDUd2xDuwVZmHXPDcQsOnfqT2z/view?usp=sharing
+
+---
+
+# Known Limitations
+
+- No save/load system
+- Story content is hard-coded in `StoryData.java`
+- No external JSON or XML support
+- Limited handling for rapid repeated input
+- UI layout is optimized for a fixed window size
+
+---
+
+# References
+
+- COMP 127 course materials
+- JavaFX Documentation  
+  https://openjfx.io/
+
+- Java SE Documentation
+- GitHub Markdown Guide  
+  https://docs.github.com/en/get-started/writing-on-github
+
+- Awesome README  
+  https://github.com/matiassingers/awesome-readme
+
+---
+
+# Credits
+
+Developed by:
+
+- Ruolin Shen
+- Tianqi Zhao
+- Bridgette Mi
+
+COMP 127 Final Project
+
+
+
