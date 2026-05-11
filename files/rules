@@ -1,0 +1,38 @@
+Twitter:
+Option A:
+Support +1, Stability -1, Mood +1
+Option B:
+Support -1, Stability -2, Mood +2
+No Tweet:
+Support +0, Stability +1, Mood +0
+Staff Meeting:
+Support +2, Stability +2, Mood -1
+Press Conference:
+Option A:
+Support -1, Stability -1, Mood +1
+Option B:
+Support -2, Stability -2, Mood +2
+Option C:
+Support -3, Stability -3, Mood +3
+Meeting with Donors:
+Support +3, Stability +1, Mood +0
+Rally:
+Option A:
+Support +1, Stability +1, Mood +1
+Option B:
+Support +2, Stability +2, Mood +2
+Debate:
+Support -1, Stability -1, Mood -1
+Ending Conditions:
+Win:
+Stability >= 3, Support >= 5
+War:
+Stability < 3
+Lose:
+Stability >= 3, Support < 5, Mood >= 6
+Sad:
+Stability >= 3, Support < 5, Mood < 6
+Initial Setup:
+Support = -2
+Stability = 0
+Mood = 0
