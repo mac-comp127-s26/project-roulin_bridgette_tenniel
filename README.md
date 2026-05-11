@@ -183,6 +183,7 @@ https://drive.google.com/file/d/1xcoYcmCDUd2xDuwVZmHXPDcQsOnfqT2z/view?usp=shari
 # References
 
 - COMP 127 course materials
+- Macalester graphic package Documentation
 - JavaFX Documentation  
   https://openjfx.io/
 
